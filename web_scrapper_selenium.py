@@ -13,7 +13,7 @@ from selenium.webdriver.support import expected_conditions as EC
 # import undetected_chromedriver as uc
 import re
 
-API_KEY='bdc_3f00dbcc437e48e2be3dd32756eb5577'
+API_KEY=''
 
 def to_float(text: str) -> float:
     match = re.search(r"-?\d+(?:\.\d+)?", text)
@@ -30,7 +30,6 @@ def getScrappedData(cityName, timeOfDay: datetime.datetime):
     driver = webdriver.Chrome(options=options )
     wait = WebDriverWait(driver, 10)
     try:
-        print(url)
         driver.get(url)
 
         # Wait until hourly rows exist in live DOM
@@ -89,6 +88,7 @@ def getScrappedData(cityName, timeOfDay: datetime.datetime):
         }
     except:
         driver.quit()
+        print(f'Error at {url}')
         return {
             "temperature": 'inconnu',
             "dew_point": 'inconnu',
@@ -119,10 +119,8 @@ def getCityNameFromCoordinatesBDC(latitude, longitude):
     try:
         responseJSON = response.json()
     except:
-        print('exception')
+        print(f'exception with url {url}')
         return
-    print(responseJSON)
-    print(responseJSON['city'])
     return responseJSON['city']
 
 def writeToCSV(scrappedData, time, id, filename):
